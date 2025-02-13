@@ -1,4 +1,5 @@
-﻿using SkySearchWorker.Application.Interfaces;
+﻿using Azure.Core;
+using SkySearchWorker.Application.Interfaces;
 using SkySearchWorker.Infrastructure.Services;
 using System;
 using System.Collections.Generic;
@@ -12,8 +13,12 @@ namespace SkySearchWorker.Startup
     {
         public static IServiceCollection RegisterInfrastructureServices(this IServiceCollection services)
         {
-            services.AddScoped<IHttpClientService, HttpClientService>();
-
+            services.AddHttpClient("amadeus", client =>
+            {
+                client.BaseAddress = new Uri("https://test.api.amadeus.com/v2/");
+                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {"sTsreNWsEolzxTVgNbIBLFP5RTW1"}");
+            });
+            services.AddSingleton<IHttpClientService, HttpClientService>();
             return services;
         }
     }

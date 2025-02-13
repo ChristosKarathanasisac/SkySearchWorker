@@ -1,7 +1,9 @@
-﻿using SkySearchWorker.Application.Interfaces;
+﻿using Azure.Core;
+using SkySearchWorker.Application.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
@@ -12,18 +14,19 @@ namespace SkySearchWorker.Infrastructure.Services
     public class HttpClientService : IHttpClientService
     {
         private readonly ILogger<HttpClientService> _logger;
-        private readonly HttpClient _httpClient;
+        private readonly IHttpClientFactory _factory;
 
-        public HttpClientService(ILogger<HttpClientService> logger, HttpClient httpClient)
+        public HttpClientService(ILogger<HttpClientService> logger, IHttpClientFactory factory)
         {
             _logger = logger;
-            _httpClient = httpClient;
+            _factory = factory;
         }
-        public async Task<T?> GetAsync<T>(string url)
+        public async Task<T?> GetAsync<T>(string url, string client)
         {
-            try 
+            try
             {
-                var response = await _httpClient.GetAsync(url);
+                using var httpClient = _factory.CreateClient(client);
+                var response = await httpClient.GetAsync(url);
 
                 if (!response.IsSuccessStatusCode)
                 {

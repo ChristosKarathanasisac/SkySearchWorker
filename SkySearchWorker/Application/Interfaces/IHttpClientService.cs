@@ -8,6 +8,6 @@ namespace SkySearchWorker.Application.Interfaces
 {
     public interface IHttpClientService
     {
-        Task<T?> GetAsync<T>(string url);
+        Task<T?> GetAsync<T>(string url, string client);
     }
 }
