@@ -10,7 +10,7 @@ namespace SkySearchWorker.Infrastructure.Configuration
     {
         public required Credentials credentials { get; set; }
         public required Urls urls { get; set; }
-        public required string amadeusClient { get; set; }
+        public required string amadeusClient = "amadeus";
     }
     public class Credentials
     {

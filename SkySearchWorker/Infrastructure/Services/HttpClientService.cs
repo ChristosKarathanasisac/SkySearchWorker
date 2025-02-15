@@ -26,33 +26,59 @@ namespace SkySearchWorker.Infrastructure.Services
             try
             {
                 using var httpClient = _factory.CreateClient(client);
+
                 var response = await httpClient.GetAsync(url);
-
-                if (!response.IsSuccessStatusCode)
-                {
-                    _logger.LogWarning("HTTP Request to {Url} failed with status code {StatusCode}", url, response.StatusCode);
-                    return default;
-                }
-
+                response.EnsureSuccessStatusCode();
                 var json = await response.Content.ReadAsStringAsync();
+
                 return JsonSerializer.Deserialize<T>(json);
             }
             catch (HttpRequestException ex)
             {
-                _logger.LogError(ex, "HTTP Request error while calling {Url}", url);
+                _logger.LogError(ex, "HTTP Request error");
             }
             catch (TaskCanceledException ex)
             {
-                _logger.LogError(ex, "HTTP Request timeout while calling {Url}", url);
+                _logger.LogError(ex, "HTTP Request timeout");
             }
             catch (JsonException ex)
             {
-                _logger.LogError(ex, "JSON Deserialization error for response from {Url}", url);
+                _logger.LogError(ex, "JSON Deserialization error");
             }
-            catch (Exception exc)
+            catch (Exception ex)
             {
-                _logger.LogError(exc, "Error while fetching data from {url}", url);
-                
+                _logger.LogError(ex, "General Exception");
+            }
+            return default;
+        }
+
+        public async Task<T?> PostUrlEncodedAsync<T>(string url,string client, Dictionary<string, string> keyValues)
+        {
+            try 
+            {
+                using var httpClient = _factory.CreateClient(client);
+
+                var content = new FormUrlEncodedContent(keyValues);
+                var response = await httpClient.PostAsync(url,content);
+                var json = await response.Content.ReadAsStringAsync();
+
+                return JsonSerializer.Deserialize<T>(json);
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError(ex, "HTTP Request error");
+            }
+            catch (TaskCanceledException ex)
+            {
+                _logger.LogError(ex, "HTTP Request timeout");
+            }
+            catch (JsonException ex)
+            {
+                _logger.LogError(ex, "JSON Deserialization error");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "General Exception");
             }
             return default;
         }
