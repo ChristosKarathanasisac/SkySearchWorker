@@ -23,5 +23,6 @@ namespace SkySearchWorker.Infrastructure.Configuration
     {
         public required string baseUrl { get; set; }
         public required string authenticate { get; set; }
+        public required string flightOffers { get; set; }
     }
 }
