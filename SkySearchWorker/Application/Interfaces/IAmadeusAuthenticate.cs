@@ -8,6 +8,6 @@ namespace SkySearchWorker.Application.Interfaces
 {
     public interface IAmadeusAuthenticate
     {
-        Task<string> Authenticate();
+        Task<bool> Authenticate();
     }
 }
