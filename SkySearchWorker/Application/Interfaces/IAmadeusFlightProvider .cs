@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace SkySearchWorker.Application.Interfaces
 {
-    public interface IAmadeusAuthenticate
+    public interface IAmadeusFlightProvider
     {
-        Task<bool> Authenticate();
+        Task<Τ?> GetFlightOffers<Τ>(Dictionary<string, string> keyValueParams);
     }
 }
