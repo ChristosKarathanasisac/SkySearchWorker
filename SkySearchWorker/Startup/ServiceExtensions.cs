@@ -1,5 +1,8 @@
 ﻿using Azure.Core;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using SkySearchWorker.Application.Interfaces;
+using SkySearchWorker.Infrastructure.Configuration;
 using SkySearchWorker.Infrastructure.Services;
 using System;
 using System.Collections.Generic;
@@ -13,12 +16,12 @@ namespace SkySearchWorker.Startup
     {
         public static IServiceCollection RegisterInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
-
-            var amadeusToken = configuration["Amadeus:AccessToken"];
-            services.AddHttpClient("amadeus", client =>
+            services.Configure<AppSettings>(configuration.GetSection("Amadeus"));
+            services.AddHttpClient("amadeus", (serviceProvider, client) =>
             {
-                client.BaseAddress = new Uri("https://test.api.amadeus.com/v2/");
-                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {amadeusToken}");
+                var settings = serviceProvider.GetRequiredService<IOptions<AppSettings>>().Value;
+                client.BaseAddress = new Uri(settings.BaseUri);
+                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {settings.AccessToken}");
             });
             services.AddSingleton<IHttpClientService, HttpClientService>();
             return services;
