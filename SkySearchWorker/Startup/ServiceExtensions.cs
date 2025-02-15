@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SkySearchWorker.Application.Interfaces;
+using SkySearchWorker.Application.Services;
 using SkySearchWorker.Infrastructure.Configuration;
 using SkySearchWorker.Infrastructure.Services;
 using System;
@@ -20,11 +21,11 @@ namespace SkySearchWorker.Startup
             services.AddHttpClient("amadeus", (serviceProvider, client) =>
             {
                 var settings = serviceProvider.GetRequiredService<IOptions<AppSettings>>().Value;
-                settings.amadeusClient = "amadeus";
                 client.BaseAddress = new Uri(settings.urls.baseUrl);
                 //client.DefaultRequestHeaders.Add("Authorization", $"Bearer {settings.AccessToken}");
             });
             services.AddSingleton<IHttpClientService, HttpClientService>();
+            services.AddSingleton<IAmadeusAuthenticate, AmadeusAuthenticate>();
             return services;
         }
     }
