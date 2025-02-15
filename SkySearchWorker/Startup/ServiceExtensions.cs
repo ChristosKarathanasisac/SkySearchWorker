@@ -20,8 +20,9 @@ namespace SkySearchWorker.Startup
             services.AddHttpClient("amadeus", (serviceProvider, client) =>
             {
                 var settings = serviceProvider.GetRequiredService<IOptions<AppSettings>>().Value;
-                client.BaseAddress = new Uri(settings.BaseUri);
-                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {settings.AccessToken}");
+                settings.amadeusClient = "amadeus";
+                client.BaseAddress = new Uri(settings.urls.baseUrl);
+                //client.DefaultRequestHeaders.Add("Authorization", $"Bearer {settings.AccessToken}");
             });
             services.AddSingleton<IHttpClientService, HttpClientService>();
             return services;
