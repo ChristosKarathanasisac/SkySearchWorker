@@ -2,6 +2,7 @@
 using SkySearchWorker.Application.DTOs.Amadeus.Authentication;
 using SkySearchWorker.Application.Interfaces;
 using SkySearchWorker.Infrastructure.Configuration;
+using SkySearchWorker.Infrastructure.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,17 +11,14 @@ using System.Threading.Tasks;
 
 namespace SkySearchWorker.Application.Services
 {
-    public class AmadeusAuthenticate : IAmadeusAuthenticate
+    public class AmadeusAuthenticationService : IAmadeusAuthentication
     {
-        private readonly ILogger<AmadeusAuthenticate> _logger;
-        private readonly IHttpClientService _httpClientService;
+        private readonly ICustomHttpClient _httpClientService;
         private readonly AppSettings _appSettings;
 
-        public AmadeusAuthenticate(ILogger<AmadeusAuthenticate> logger,
-            IHttpClientService httpClientService,
+        public AmadeusAuthenticationService(ICustomHttpClient httpClientService,
             IOptions<AppSettings> appSettings)
         {
-            _logger = logger;
             _httpClientService = httpClientService;
             _appSettings = appSettings.Value;
         }
