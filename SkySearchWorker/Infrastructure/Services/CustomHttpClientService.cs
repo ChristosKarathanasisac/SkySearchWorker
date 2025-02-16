@@ -1,5 +1,5 @@
 ﻿using Azure.Core;
-using SkySearchWorker.Application.Interfaces;
+using SkySearchWorker.Infrastructure.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,12 +11,13 @@ using System.Threading.Tasks;
 
 namespace SkySearchWorker.Infrastructure.Services
 {
-    public class HttpClientService : IHttpClientService
+    public class CustomHttpClientService : ICustomHttpClient
     {
-        private readonly ILogger<HttpClientService> _logger;
+        private readonly ILogger<CustomHttpClientService> _logger;
         private readonly IHttpClientFactory _factory;
 
-        public HttpClientService(ILogger<HttpClientService> logger, IHttpClientFactory factory)
+        public CustomHttpClientService(ILogger<CustomHttpClientService> logger,
+            IHttpClientFactory factory)
         {
             _logger = logger;
             _factory = factory;
