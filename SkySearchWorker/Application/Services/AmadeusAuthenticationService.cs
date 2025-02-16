@@ -31,7 +31,8 @@ namespace SkySearchWorker.Application.Services
                 { "client_secret", _appSettings.credentials.clientSecret }
             };
 
-            var response = await _httpClientService.PostUrlEncodedAsync<AuthenticationResponseDto>(_appSettings.urls.authenticate, _appSettings.amadeusClient, values);
+            var url = new Uri(new Uri(_appSettings.urls.authBase), _appSettings.urls.authenticate).ToString();
+            var response = await _httpClientService.PostUrlEncodedAsync<AuthenticationResponseDto>(url, _appSettings.amadeusClient, values);
 
             if (response != null)
             {

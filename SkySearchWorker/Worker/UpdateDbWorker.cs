@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Options;
 using SkySearchWorker.Application.Interfaces;
+using SkySearchWorker.Application.Services;
 using SkySearchWorker.Infrastructure.Configuration;
 
 namespace SkySearchWorker.Worker
@@ -7,22 +8,21 @@ namespace SkySearchWorker.Worker
     public class UpdateDbWorker : BackgroundService
     {
         private readonly ILogger<UpdateDbWorker> _logger;
-        private readonly IAmadeusAuthenticate _amadeusAuthenticate;
-        private readonly AppSettings _appSettings;
+        private readonly ISkySearchSync _skySearchSync;
 
         public UpdateDbWorker(ILogger<UpdateDbWorker> logger,
-            IAmadeusAuthenticate amadeusAuthenticate,
-            IOptions<AppSettings> appSettings)
+            ISkySearchSync skySearchSync
+            )
         {
             _logger = logger;
-            _amadeusAuthenticate = amadeusAuthenticate;
-            _appSettings = appSettings.Value;
+            _skySearchSync = skySearchSync;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             //var url = "shopping/flight-offers?originLocationCode=DXB&destinationLocationCode=IST&departureDate=2025-02-18&adults=1&nonStop=false&max=2";
-            var authenticate = await _amadeusAuthenticate.Authenticate();
+            //var authenticate = await _amadeusAuthenticate.Authenticate();
+            await _skySearchSync.Sync();
         }
     }
 }

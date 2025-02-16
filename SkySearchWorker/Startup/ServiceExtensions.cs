@@ -19,12 +19,7 @@ namespace SkySearchWorker.Startup
         public static IServiceCollection RegisterInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<AppSettings>(configuration.GetSection("Amadeus"));
-            services.AddHttpClient("amadeus", (serviceProvider, client) =>
-            {
-                var settings = serviceProvider.GetRequiredService<IOptions<AppSettings>>().Value;
-                client.BaseAddress = new Uri(settings.urls.baseUrl);
-                //client.DefaultRequestHeaders.Add("Authorization", $"Bearer {settings.AccessToken}");
-            });
+            services.AddHttpClient("amadeus", (client) => { });
             services.AddSingleton<ICustomHttpClient, CustomHttpClientService>();
             services.AddSingleton<IAmadeusAuthentication, AmadeusAuthenticationService>();
             services.AddSingleton<IAmadeusFlightProvider, AmadeusFlightProviderService>();

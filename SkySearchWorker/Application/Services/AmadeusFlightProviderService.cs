@@ -1,12 +1,17 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Azure.Core;
+using Microsoft.Extensions.Options;
 using SkySearchWorker.Application.Interfaces;
 using SkySearchWorker.Infrastructure.Configuration;
 using SkySearchWorker.Infrastructure.Interfaces;
 using System;
+using System.Buffers.Text;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace SkySearchWorker.Application.Services
 {
@@ -21,19 +26,27 @@ namespace SkySearchWorker.Application.Services
             _httpClientService = httpClientService;
             _appSettings = appSettings.Value;
         }
-        public Task<Τ?> GetFlightOffers<Τ>(Dictionary<string, string> keyValueParams)
+        public async Task<Τ?> GetFlightOffers<Τ>(Dictionary<string, string> keyValueParams)
         {
-            throw new NotImplementedException();
-        }
-
-        private string BuildUrl(Dictionary<string, string> keyValueParams)
-        {
-            var url = _appSettings.urls.flightOffers;
-            foreach (var key in keyValueParams.Keys)
+            var queryParams = HttpUtility.ParseQueryString(string.Empty);
+            foreach (var param in keyValueParams)
             {
-                url = url.Replace($"{{{key}}}", keyValueParams[key]);
+                queryParams[param.Key] = param.Value;
             }
-            return url;
+
+            string fullUrl = new Uri(new Uri(_appSettings.urls.shoppingBase), _appSettings.urls.flightOffers).ToString();
+            var uriBuilder = new UriBuilder(fullUrl)
+            {
+                Port = -1,
+                Query = queryParams.ToString()
+            };
+
+            var flights = await _httpClientService.GetAsyncWithBearerAuth<String>(uriBuilder.ToString(),
+                _appSettings.amadeusClient,
+                _appSettings.credentials.accessToken);
+
+            return default;
         }
     }
+
 }
