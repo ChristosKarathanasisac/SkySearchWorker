@@ -1,9 +1,11 @@
 ﻿using Azure.Core;
+using SkySearchWorker.Infrastructure.Configuration;
 using SkySearchWorker.Infrastructure.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
@@ -22,35 +24,39 @@ namespace SkySearchWorker.Infrastructure.Services
             _logger = logger;
             _factory = factory;
         }
-        public async Task<T?> GetAsync<T>(string url, string client)
+        public async Task<T?> GetAsyncWithBearerAuth<T>(string url, string client, string accessToken)
         {
             try
             {
                 using var httpClient = _factory.CreateClient(client);
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
                 var response = await httpClient.GetAsync(url);
                 response.EnsureSuccessStatusCode();
                 var json = await response.Content.ReadAsStringAsync();
 
-                return JsonSerializer.Deserialize<T>(json);
+                return JsonSerializer.Deserialize<T>("json");
             }
             catch (HttpRequestException ex)
             {
-                _logger.LogError(ex, "HTTP Request error");
+                _logger.LogError(ex, "HTTP Request error on {Url}", url);
+                throw;
             }
             catch (TaskCanceledException ex)
             {
-                _logger.LogError(ex, "HTTP Request timeout");
+                _logger.LogError(ex, "HTTP Request timeout on {Url}",url);
+                throw;
             }
             catch (JsonException ex)
             {
-                _logger.LogError(ex, "JSON Deserialization error");
+                _logger.LogError(ex, "JSON Deserialization error for URL: {Url}", url);
+                throw;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "General Exception");
+                _logger.LogError(ex, "General Exception occurred for URL: {Url}", url);
+                throw;
             }
-            return default;
         }
 
         public async Task<T?> PostUrlEncodedAsync<T>(string url,string client, Dictionary<string, string> keyValues)
@@ -67,21 +73,24 @@ namespace SkySearchWorker.Infrastructure.Services
             }
             catch (HttpRequestException ex)
             {
-                _logger.LogError(ex, "HTTP Request error");
+                _logger.LogError(ex, "HTTP Request error on {Url}", url);
+                throw;
             }
             catch (TaskCanceledException ex)
             {
-                _logger.LogError(ex, "HTTP Request timeout");
+                _logger.LogError(ex, "HTTP Request timeout on {Url}",url);
+                throw;
             }
             catch (JsonException ex)
             {
-                _logger.LogError(ex, "JSON Deserialization error");
+                _logger.LogError(ex, "JSON Deserialization error for URL: {Url}", url);
+                throw;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "General Exception");
+                _logger.LogError(ex, "General Exception occurred for URL: {Url}", url);
+                throw;
             }
-            return default;
         }
     }
 }
