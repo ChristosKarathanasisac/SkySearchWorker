@@ -21,7 +21,8 @@ namespace SkySearchWorker.Infrastructure.Configuration
     }
     public class Urls
     {
-        public required string baseUrl { get; set; }
+        public required string authBase { get; set; }
+        public required string shoppingBase { get; set; }
         public required string authenticate { get; set; }
         public required string flightOffers { get; set; }
     }
