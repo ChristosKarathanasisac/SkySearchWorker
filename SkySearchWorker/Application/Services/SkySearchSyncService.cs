@@ -1,4 +1,5 @@
-﻿using SkySearchWorker.Application.Interfaces;
+﻿using SkySearchWorker.Application.DTOs.Amadeus.FlightOffer;
+using SkySearchWorker.Application.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,14 +32,14 @@ namespace SkySearchWorker.Application.Services
                 return false;
             }
 
-            var flights = await _amadeusFlightProvider.GetFlightOffers<string>(new Dictionary<string, string>
+            var flights = await _amadeusFlightProvider.GetFlightOffers<FlightOfferDto>(new Dictionary<string, string>
             {
                 { "originLocationCode", "LHR" },
                 { "destinationLocationCode", "DXB" },
                 { "departureDate", "2025-04-04" },
                 { "adults", "1" },
-                { "nonStop", "false" },
-                { "max", "2" }
+                { "nonStop", "true" },
+                { "max", "1" }
             });
 
             return true;

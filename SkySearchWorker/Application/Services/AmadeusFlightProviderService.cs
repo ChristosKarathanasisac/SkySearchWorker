@@ -1,5 +1,6 @@
 ﻿using Azure.Core;
 using Microsoft.Extensions.Options;
+using SkySearchWorker.Application.DTOs.Amadeus.FlightOffer;
 using SkySearchWorker.Application.Interfaces;
 using SkySearchWorker.Infrastructure.Configuration;
 using SkySearchWorker.Infrastructure.Interfaces;
@@ -26,7 +27,7 @@ namespace SkySearchWorker.Application.Services
             _httpClientService = httpClientService;
             _appSettings = appSettings.Value;
         }
-        public async Task<Τ?> GetFlightOffers<Τ>(Dictionary<string, string> keyValueParams)
+        public async Task<T?> GetFlightOffers<T>(Dictionary<string, string> keyValueParams)
         {
             var queryParams = HttpUtility.ParseQueryString(string.Empty);
             foreach (var param in keyValueParams)
@@ -41,7 +42,7 @@ namespace SkySearchWorker.Application.Services
                 Query = queryParams.ToString()
             };
 
-            var flights = await _httpClientService.GetAsyncWithBearerAuth<String>(uriBuilder.ToString(),
+            var flights = await _httpClientService.GetAsyncWithBearerAuth<T>(uriBuilder.ToString(),
                 _appSettings.amadeusClient,
                 _appSettings.credentials.accessToken);
 
