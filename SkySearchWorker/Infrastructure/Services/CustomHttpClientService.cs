@@ -35,7 +35,7 @@ namespace SkySearchWorker.Infrastructure.Services
                 response.EnsureSuccessStatusCode();
                 var json = await response.Content.ReadAsStringAsync();
 
-                return JsonSerializer.Deserialize<T>("json");
+                return JsonSerializer.Deserialize<T>(json);
             }
             catch (HttpRequestException ex)
             {
