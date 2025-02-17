@@ -36,7 +36,7 @@ namespace SkySearchWorker.Application.Services
 
             if (response != null)
             {
-                _appSettings.credentials.accessToken = response.access_token!;
+                _appSettings.credentials.accessToken = response.AccessToken!;
                 return true;
             }
 
