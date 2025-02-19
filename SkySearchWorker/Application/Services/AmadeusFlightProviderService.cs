@@ -46,7 +46,7 @@ namespace SkySearchWorker.Application.Services
                 _appSettings.AmadeusClient,
                 _appSettings.Credentials.AccessToken);
 
-            return default;
+            return flights;
         }
     }
 
