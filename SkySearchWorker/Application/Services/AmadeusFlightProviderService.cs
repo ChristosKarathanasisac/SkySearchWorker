@@ -35,7 +35,7 @@ namespace SkySearchWorker.Application.Services
                 queryParams[param.Key] = param.Value;
             }
 
-            string fullUrl = new Uri(new Uri(_appSettings.urls.shoppingBase), _appSettings.urls.flightOffers).ToString();
+            string fullUrl = new Uri(new Uri(_appSettings.Urls.ShoppingBase), _appSettings.Urls.FlightOffers).ToString();
             var uriBuilder = new UriBuilder(fullUrl)
             {
                 Port = -1,
@@ -43,8 +43,8 @@ namespace SkySearchWorker.Application.Services
             };
 
             var flights = await _httpClientService.GetAsyncWithBearerAuth<T>(uriBuilder.ToString(),
-                _appSettings.amadeusClient,
-                _appSettings.credentials.accessToken);
+                _appSettings.AmadeusClient,
+                _appSettings.Credentials.AccessToken);
 
             return default;
         }

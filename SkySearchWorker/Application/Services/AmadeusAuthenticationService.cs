@@ -27,16 +27,16 @@ namespace SkySearchWorker.Application.Services
             var values = new Dictionary<string, string>
             {
                 { "grant_type", "client_credentials" },
-                { "client_id", _appSettings.credentials.clientΙd },
-                { "client_secret", _appSettings.credentials.clientSecret }
+                { "client_id", _appSettings.Credentials.ClientΙd },
+                { "client_secret", _appSettings.Credentials.ClientSecret }
             };
 
-            var url = new Uri(new Uri(_appSettings.urls.authBase), _appSettings.urls.authenticate).ToString();
-            var response = await _httpClientService.PostUrlEncodedAsync<AuthenticationResponseDto>(url, _appSettings.amadeusClient, values);
+            var url = new Uri(new Uri(_appSettings.Urls.AuthBase), _appSettings.Urls.Authenticate).ToString();
+            var response = await _httpClientService.PostUrlEncodedAsync<AuthenticationResponseDto>(url, _appSettings.AmadeusClient, values);
 
             if (response != null)
             {
-                _appSettings.credentials.accessToken = response.AccessToken!;
+                _appSettings.Credentials.AccessToken = response.AccessToken!;
                 return true;
             }
 

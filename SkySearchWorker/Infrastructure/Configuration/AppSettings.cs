@@ -8,22 +8,22 @@ namespace SkySearchWorker.Infrastructure.Configuration
 {
     public class AppSettings
     {
-        public required Credentials credentials { get; set; }
-        public required Urls urls { get; set; }
-        public required string amadeusClient = "amadeus";
+        public required Credentials Credentials { get; set; }
+        public required Urls Urls { get; set; }
+        public required string AmadeusClient = "amadeus";
     }
     public class Credentials
     {
-        public required string clientΙd { get; set; }
-        public required string clientSecret { get; set; }
-        public required string grantType { get; set; }
-        public required string accessToken { get; set; }
+        public required string ClientΙd { get; set; }
+        public required string ClientSecret { get; set; }
+        public required string GrantType { get; set; }
+        public required string AccessToken { get; set; }
     }
     public class Urls
     {
-        public required string authBase { get; set; }
-        public required string shoppingBase { get; set; }
-        public required string authenticate { get; set; }
-        public required string flightOffers { get; set; }
+        public required string AuthBase { get; set; }
+        public required string ShoppingBase { get; set; }
+        public required string Authenticate { get; set; }
+        public required string FlightOffers { get; set; }
     }
 }
