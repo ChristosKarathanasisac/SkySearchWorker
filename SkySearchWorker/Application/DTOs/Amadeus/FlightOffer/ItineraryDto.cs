@@ -5,9 +5,9 @@ namespace SkySearchWorker.Application.DTOs.Amadeus.FlightOffer
     public class ItineraryDto
     {
         [JsonPropertyName("duration")]
-        public string Duration { get; set; }
+        public string? Duration { get; set; }
 
         [JsonPropertyName("segments")]
-        public List<SegmentDto> Segments { get; set; }
+        public List<SegmentDto>? Segments { get; set; }
     }
 }

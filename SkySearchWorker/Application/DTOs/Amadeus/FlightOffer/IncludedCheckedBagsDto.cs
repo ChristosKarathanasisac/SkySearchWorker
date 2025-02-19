@@ -8,6 +8,6 @@ namespace SkySearchWorker.Application.DTOs.Amadeus.FlightOffer
         public int Weight { get; set; }
 
         [JsonPropertyName("weightUnit")]
-        public string WeightUnit { get; set; }
+        public string? WeightUnit { get; set; }
     }
 }

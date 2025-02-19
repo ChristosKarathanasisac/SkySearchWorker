@@ -5,6 +5,6 @@ namespace SkySearchWorker.Application.DTOs.Amadeus.FlightOffer
     public class OperatingDto
     {
         [JsonPropertyName("carrierCode")]
-        public string CarrierCode { get; set; }
+        public string? CarrierCode { get; set; }
     }
 }
