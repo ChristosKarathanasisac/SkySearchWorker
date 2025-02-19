@@ -23,6 +23,7 @@ namespace SkySearchWorker.Startup
             services.AddSingleton<ICustomHttpClient, CustomHttpClientService>();
             services.AddSingleton<IAmadeusAuthentication, AmadeusAuthenticationService>();
             services.AddSingleton<IAmadeusFlightProvider, AmadeusFlightProviderService>();
+            services.AddSingleton<IExampleHelper, ExampleHelper>();
             services.AddSingleton<ISkySearchSync, SkySearchSyncService>();
 
             return services;
