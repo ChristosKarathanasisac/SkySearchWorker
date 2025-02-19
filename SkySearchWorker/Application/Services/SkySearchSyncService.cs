@@ -1,7 +1,10 @@
-﻿using SkySearchWorker.Application.DTOs.Amadeus.FlightOffer;
+﻿using Microsoft.Extensions.Options;
+using SkySearchWorker.Application.DTOs.Amadeus.FlightOffer;
 using SkySearchWorker.Application.Interfaces;
+using SkySearchWorker.Infrastructure.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,15 +15,18 @@ namespace SkySearchWorker.Application.Services
     {
         private readonly ILogger<SkySearchSyncService> _logger;
         private readonly IAmadeusAuthentication _amadeusAuthenticate;
-        private readonly IAmadeusFlightProvider _amadeusFlightProvider;
+        private readonly IExampleHelper _exampleHelper;
+        private readonly AppSettings _appSettings;
 
         public SkySearchSyncService(ILogger<SkySearchSyncService> logger,
             IAmadeusAuthentication amadeusAuthenticate,
-            IAmadeusFlightProvider amadeusFlightProvider)
+            IExampleHelper exampleHelper,
+            IOptions<AppSettings> appSettings)
         {
             _logger = logger;
             _amadeusAuthenticate = amadeusAuthenticate;
-            _amadeusFlightProvider = amadeusFlightProvider;
+            _appSettings = appSettings.Value;
+            _exampleHelper = exampleHelper;
         }
         public async Task<bool> Sync()
         {
@@ -32,16 +38,17 @@ namespace SkySearchWorker.Application.Services
                 return false;
             }
 
-            var flights = await _amadeusFlightProvider.GetFlightOffers<FlightOfferDto>(new Dictionary<string, string>
-            {
-                { "originLocationCode", "LHR" },
-                { "destinationLocationCode", "DXB" },
-                { "departureDate", "2025-04-04" },
-                { "adults", "1" },
-                { "nonStop", "true" },
-                { "max", "1" }
-            });
+            var tasks = _exampleHelper.GetFlightOfferTasks();
 
+            try
+            {
+                var fligthOffers = await Task.WhenAll(tasks);
+            }
+            catch (Exception ex)
+            {
+                var test = ex.ToString();
+            }
+          
             return true;
 
         }
