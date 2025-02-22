@@ -9,8 +9,8 @@ namespace SkySearchWorker.Application.Interfaces
 {
     public interface IExampleHelper
     {
-        List<Task<FlightOfferDto>> GetFlightOfferTasks();
+        List<Dictionary<string, string>> GetFlightOfferDictionaries();
         List<string> GetDateRange(string fromDate, string toDate);
-        List<List<Task<FlightOfferDto>>> GetGroupedFlightOfferTasks();
+        public List<List<Dictionary<string, string>>> GetGroupedFlightOfferDictionaries();
     }
 }

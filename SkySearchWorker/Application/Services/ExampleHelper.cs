@@ -35,31 +35,40 @@ namespace SkySearchWorker.Application.Services
             return dateList; 
         }
 
-        public List<Task<FlightOfferDto>> GetFlightOfferTasks()
+        public List<Dictionary<string,string>> GetFlightOfferDictionaries()
         {
             var airports = _appSettings.TestData.Airports;
             var dates = GetDateRange(_appSettings.TestData.FromDate, _appSettings.TestData.ToDate);
 
-            var tasks = (from date in dates
-                         from origin in airports
-                         from destination in airports
-                         where origin != destination
-                         select _amadeusFlightProvider.GetFlightOffers<FlightOfferDto>(new Dictionary<string, string>
-                         {
-                             { "originLocationCode", origin },
-                             { "destinationLocationCode", destination },
-                             { "departureDate", date },
-                             { "adults", "1" },
-                             { "nonStop", "true" },
-                             { "max", "1" }
-                         })).ToList();
+            var dictionaries = (from date in dates
+                                from origin in airports
+                                from destination in airports
+                                where origin != destination
+                                select new Dictionary<string, string>
+                                {
+                                    { "originLocationCode", origin },
+                                    { "destinationLocationCode", destination },
+                                    { "departureDate", date },
+                                    { "adults", "1" },
+                                    { "nonStop", "true" },
+                                    { "max", "1" }
+                                }).ToList();
 
-            return tasks;
+            return dictionaries;
         }
 
-        public List<List<Task<FlightOfferDto>>> GetGroupedFlightOfferTasks()
+        public List<List<Dictionary<string, string>>> GetGroupedFlightOfferDictionaries()
         {
-            throw new NotImplementedException();
+            var dictionaries = GetFlightOfferDictionaries();
+            var batchSize = _appSettings.TestData.MaxConcurrentCalls;
+
+            var groupedDictionaries = dictionaries
+                .Select((task, index) => new { task, index })
+                .GroupBy(x => x.index / batchSize)
+                .Select(g => g.Select(x => x.task).ToList())
+                .ToList();
+
+            return groupedDictionaries;
         }
     }
 }
