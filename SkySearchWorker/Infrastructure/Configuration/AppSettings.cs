@@ -33,5 +33,7 @@ namespace SkySearchWorker.Infrastructure.Configuration
         public required List<string> Airports { get; set; }
         public required string FromDate { get; set; }
         public required string ToDate { get; set; }
+        public required int MaxConcurrentCalls { get; set; }
+        public required int DelayBetweenCalls { get; set; }
     }
 }
