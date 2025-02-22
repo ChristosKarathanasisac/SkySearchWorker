@@ -17,16 +17,19 @@ namespace SkySearchWorker.Application.Services
         private readonly IAmadeusAuthentication _amadeusAuthenticate;
         private readonly IExampleHelper _exampleHelper;
         private readonly AppSettings _appSettings;
+        private readonly IAmadeusFlightProvider _amadeusFlightProvider;
 
         public SkySearchSyncService(ILogger<SkySearchSyncService> logger,
             IAmadeusAuthentication amadeusAuthenticate,
             IExampleHelper exampleHelper,
-            IOptions<AppSettings> appSettings)
+            IOptions<AppSettings> appSettings,
+            IAmadeusFlightProvider amadeusFlightProvider)
         {
             _logger = logger;
             _amadeusAuthenticate = amadeusAuthenticate;
             _appSettings = appSettings.Value;
             _exampleHelper = exampleHelper;
+            _amadeusFlightProvider = amadeusFlightProvider;
         }
         public async Task<bool> Sync()
         {
@@ -37,20 +40,25 @@ namespace SkySearchWorker.Application.Services
                 _logger.LogError("Failed to authenticate with Amadeus");
                 return false;
             }
+            var dictionaryBatches = _exampleHelper.GetGroupedFlightOfferDictionaries();
+            var fligthOffers = new List<FlightOfferDto>();
 
-            var tasks = _exampleHelper.GetFlightOfferTasks();
+            foreach (var dictionaryBatche in dictionaryBatches)
+            {
+                var tasks = new List<Task<FlightOfferDto?>>();
+                foreach (var dictionary in dictionaryBatche)
+                {
+                    var task = _amadeusFlightProvider.GetFlightOffers<FlightOfferDto>(dictionary);
+                    tasks.Add(task);
+                }
+                var batchResults = await Task.WhenAll(tasks);
+                fligthOffers.AddRange(batchResults.Where(result => result != null).Cast<FlightOfferDto>());
 
-            try
-            {
-                var fligthOffers = await Task.WhenAll(tasks);
+                _logger.LogInformation($"Delay before next call: {_appSettings.TestData.DelayBetweenCalls} ms");
+                await Task.Delay(_appSettings.TestData.DelayBetweenCalls);
             }
-            catch (Exception ex)
-            {
-                var test = ex.ToString();
-            }
-          
+            var test = fligthOffers;
             return true;
-
         }
     }
 }
