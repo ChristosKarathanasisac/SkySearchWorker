@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace SkySearchWorker.Infrastructure.Data
 {
-    public class DataContext : DbContext
+    public class ApplicationDbContext : DbContext
     {
-        public DataContext(DbContextOptions<DataContext> options) : base(options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
         public DbSet<Airline> Airlines { get; set; }

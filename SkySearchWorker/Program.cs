@@ -1,4 +1,6 @@
+using Microsoft.EntityFrameworkCore;
 using Serilog;
+using SkySearchWorker.Infrastructure.Data;
 using SkySearchWorker.Startup;
 using SkySearchWorker.Worker;
 
@@ -8,6 +10,8 @@ try
         .ConfigureLogging();
 
     builder.Services.RegisterInfrastructureServices(builder.Configuration);
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
     builder.Services.AddHostedService<UpdateDbWorker>();
 
     var host = builder.Build();
