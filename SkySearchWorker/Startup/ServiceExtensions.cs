@@ -16,11 +16,15 @@ namespace SkySearchWorker.Startup
 {
     public static class ServiceExtensions
     {
-        public static IServiceCollection RegisterInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection RegisterInfrastructureServices(this IServiceCollection services)
         {
-            services.Configure<AppSettings>(configuration.GetSection("Amadeus"));
-            services.AddHttpClient("amadeus", (client) => { });
             services.AddSingleton<ICustomHttpClient, CustomHttpClientService>();
+            
+            return services;
+        }
+
+        public static IServiceCollection RegisterApplicationServices(this IServiceCollection services)
+        {
             services.AddSingleton<IAmadeusAuthentication, AmadeusAuthenticationService>();
             services.AddSingleton<IAmadeusFlightProvider, AmadeusFlightProviderService>();
             services.AddSingleton<IExampleHelper, ExampleHelper>();
