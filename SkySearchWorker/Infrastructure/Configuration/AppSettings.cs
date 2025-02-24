@@ -9,6 +9,7 @@ namespace SkySearchWorker.Infrastructure.Configuration
 {
     public class AppSettings
     {
+        public bool IsDevelopment { get; set; }
         public required Credentials Credentials { get; set; }
         public required Urls Urls { get; set; }
         public required string AmadeusClient = "amadeus";

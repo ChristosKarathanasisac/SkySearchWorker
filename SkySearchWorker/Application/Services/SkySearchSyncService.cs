@@ -16,8 +16,8 @@ namespace SkySearchWorker.Application.Services
         private readonly ILogger<SkySearchSyncService> _logger;
         private readonly IAmadeusAuthentication _amadeusAuthenticate;
         private readonly IExampleHelper _exampleHelper;
-        private readonly AppSettings _appSettings;
         private readonly IAmadeusFlightProvider _amadeusFlightProvider;
+        private readonly AppSettings _appSettings;
 
         public SkySearchSyncService(ILogger<SkySearchSyncService> logger,
             IAmadeusAuthentication amadeusAuthenticate,
