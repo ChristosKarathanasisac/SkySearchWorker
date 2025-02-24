@@ -13,7 +13,7 @@ namespace SkySearchWorker.Infrastructure.Data.Entities
         public string? Class { get; set; }
         public int AvailableSeats {get;set;}
         public DateTime Date { get; set; }
-        public string? currency { get; set; }
+        public string? Currency { get; set; }
         public int FlightId { get; set; }
         public Flight? Flight { get; set; }
     }
