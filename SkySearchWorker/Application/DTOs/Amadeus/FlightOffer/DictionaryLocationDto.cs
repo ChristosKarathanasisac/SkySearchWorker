@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 
 namespace SkySearchWorker.Application.DTOs.Amadeus.FlightOffer
 {
-    public class FlightOfferDto
+    public class DictionaryLocationDto
     {
-        [JsonPropertyName("data")]
-        public required List<DatumDto> Data { get; set; }
-        [JsonPropertyName("dictionaries")]
-        public required DictionaryDto Dictionary { get; set; }
+        [JsonPropertyName("cityCode")]
+        public required string CityCode { get; set; }
+
+        [JsonPropertyName("countryCode")]
+        public required string CountryCode { get; set; }
     }
 }
