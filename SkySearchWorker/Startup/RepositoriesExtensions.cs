@@ -17,6 +17,7 @@ namespace SkySearchWorker.Startup
     {
         public static IServiceCollection RegisterRepositorieServices(this IServiceCollection services)
         {
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IFlightRepository, FlightRepository>();
             services.AddScoped<IAirportRepository, AirportRepository>();
             services.AddScoped<IAirlineRepository, AirlineRepository>();

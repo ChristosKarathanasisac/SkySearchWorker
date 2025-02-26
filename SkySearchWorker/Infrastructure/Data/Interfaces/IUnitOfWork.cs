@@ -1,11 +1,10 @@
-﻿using SkySearchWorker.Infrastructure.Data.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SkySearchWorker.Infrastructure.Interfaces
+namespace SkySearchWorker.Infrastructure.Data.Interfaces
 {
     public interface IUnitOfWork : IDisposable
     {

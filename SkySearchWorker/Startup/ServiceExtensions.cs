@@ -4,6 +4,8 @@ using Microsoft.Extensions.Options;
 using SkySearchWorker.Application.Interfaces;
 using SkySearchWorker.Application.Services;
 using SkySearchWorker.Infrastructure.Configuration;
+using SkySearchWorker.Infrastructure.Data.Interfaces;
+using SkySearchWorker.Infrastructure.Data.Services;
 using SkySearchWorker.Infrastructure.Interfaces;
 using SkySearchWorker.Infrastructure.Services;
 using System;
@@ -19,7 +21,6 @@ namespace SkySearchWorker.Startup
         public static IServiceCollection RegisterInfrastructureServices(this IServiceCollection services)
         {
             services.AddSingleton<ICustomHttpClient, CustomHttpClientService>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
             return services;
         }
 

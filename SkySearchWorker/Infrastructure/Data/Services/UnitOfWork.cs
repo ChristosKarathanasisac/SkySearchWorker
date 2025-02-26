@@ -1,15 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SkySearchWorker.Infrastructure.Data;
 using SkySearchWorker.Infrastructure.Data.Interfaces;
-using SkySearchWorker.Infrastructure.Data.Services;
-using SkySearchWorker.Infrastructure.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SkySearchWorker.Infrastructure.Services
+namespace SkySearchWorker.Infrastructure.Data.Services
 {
     public class UnitOfWork : IUnitOfWork
     {
