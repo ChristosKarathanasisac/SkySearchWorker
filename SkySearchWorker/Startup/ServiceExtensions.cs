@@ -19,7 +19,7 @@ namespace SkySearchWorker.Startup
         public static IServiceCollection RegisterInfrastructureServices(this IServiceCollection services)
         {
             services.AddSingleton<ICustomHttpClient, CustomHttpClientService>();
-            
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             return services;
         }
 
