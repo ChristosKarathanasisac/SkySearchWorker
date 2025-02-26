@@ -31,16 +31,16 @@ namespace SkySearchWorker.Infrastructure.Data
                 // Seed Airports
                 var airports = new List<Airport>
                 {
-                    new Airport { Name = "Airport X", Code = "AX", CityCode = "CX", CountryCode = "US" },
-                    new Airport { Name = "Airport Y", Code = "AY", CityCode = "CY", CountryCode = "US" }
+                    new Airport { Code = "AX", CityCode = "CX", CountryCode = "US" },
+                    new Airport { Code = "AY", CityCode = "CY", CountryCode = "US" }
                 };
                 context.Airports.AddRange(airports);
 
                 // Seed Flights
                 var flights = new List<Flight>
                 {
-                    new Flight { DepartureTime = DateTime.Now, ArrivalTime = DateTime.Now.AddHours(2), Airline = airlines[0], Airport = airports[0] },
-                    new Flight { DepartureTime = DateTime.Now.AddHours(3), ArrivalTime = DateTime.Now.AddHours(5), Airline = airlines[1], Airport = airports[1] }
+                    new Flight { DepartureTime = DateTime.Now, ArrivalTime = DateTime.Now.AddHours(2), NumberOfAvailableSeats = 2, Airline = airlines[0], Airport = airports[0] },
+                    new Flight { DepartureTime = DateTime.Now.AddHours(3), ArrivalTime = DateTime.Now.AddHours(5), NumberOfAvailableSeats = 2, Airline = airlines[1], Airport = airports[1] }
                 };
                 context.Flights.AddRange(flights);
 

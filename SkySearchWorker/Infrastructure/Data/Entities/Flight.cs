@@ -16,5 +16,6 @@ namespace SkySearchWorker.Infrastructure.Data.Entities
         public int AirportId { get; set; }
         public Airport? Airport { get; set; }
         public List<FlightPrice>? FlightPrices { get; set; }
+        public int NumberOfAvailableSeats { get; set; }
     }
 }

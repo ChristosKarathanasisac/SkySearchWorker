@@ -20,6 +20,7 @@ namespace SkySearchWorker.Infrastructure.Data.EfConfiguration
             builder.Property(f => f.AirportId).IsRequired();
             builder.Property(f => f.ArrivalTime).IsRequired();
             builder.Property(f => f.DepartureTime).IsRequired();
+            builder.Property(f => f.NumberOfAvailableSeats).IsRequired();
 
             builder.HasOne(f => f.Airline)
                    .WithMany(a => a.Flights)

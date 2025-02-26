@@ -15,7 +15,6 @@ namespace SkySearchWorker.Infrastructure.Data.EfConfiguration
         {
             builder.ToTable("Airport");
             builder.HasKey(a => a.Id);
-            builder.Property(a => a.Name).HasMaxLength(100).IsRequired();
             builder.Property(a => a.Code).HasMaxLength(10).IsRequired();
             builder.Property(a => a.CityCode).HasMaxLength(10).IsRequired();
             builder.Property(a => a.CountryCode).HasMaxLength(10).IsRequired();
