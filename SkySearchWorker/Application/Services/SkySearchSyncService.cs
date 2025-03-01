@@ -17,22 +17,26 @@ namespace SkySearchWorker.Application.Services
         private readonly IAmadeusAuthentication _amadeusAuthenticate;
         private readonly IExampleHelper _exampleHelper;
         private readonly IAmadeusFlightProvider _amadeusFlightProvider;
+        private readonly IUpdateData _updateData;
         private readonly AppSettings _appSettings;
 
         public SkySearchSyncService(ILogger<SkySearchSyncService> logger,
             IAmadeusAuthentication amadeusAuthenticate,
             IExampleHelper exampleHelper,
             IOptions<AppSettings> appSettings,
-            IAmadeusFlightProvider amadeusFlightProvider)
+            IAmadeusFlightProvider amadeusFlightProvider,
+            IUpdateData updateData)
         {
             _logger = logger;
             _amadeusAuthenticate = amadeusAuthenticate;
             _appSettings = appSettings.Value;
             _exampleHelper = exampleHelper;
             _amadeusFlightProvider = amadeusFlightProvider;
+            _updateData = updateData;
         }
         public async Task<bool> Sync()
         {
+            
             var authenticate = await _amadeusAuthenticate.Authenticate();
 
             if (!authenticate)
@@ -57,7 +61,8 @@ namespace SkySearchWorker.Application.Services
                 _logger.LogInformation($"Delay before next call: {_appSettings.TestData.DelayBetweenCalls} ms");
                 await Task.Delay(_appSettings.TestData.DelayBetweenCalls);
             }
-            var test = fligthOffers;
+
+            await _updateData.UpdateDatabase(fligthOffers);
             return true;
         }
     }
