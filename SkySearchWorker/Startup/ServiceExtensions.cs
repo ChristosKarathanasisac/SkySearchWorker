@@ -20,16 +20,17 @@ namespace SkySearchWorker.Startup
     {
         public static IServiceCollection RegisterInfrastructureServices(this IServiceCollection services)
         {
-            services.AddSingleton<ICustomHttpClient, CustomHttpClientService>();
+            services.AddScoped<ICustomHttpClient, CustomHttpClientService>();
             return services;
         }
 
         public static IServiceCollection RegisterApplicationServices(this IServiceCollection services)
         {
-            services.AddSingleton<IAmadeusAuthentication, AmadeusAuthenticationService>();
-            services.AddSingleton<IAmadeusFlightProvider, AmadeusFlightProviderService>();
-            services.AddSingleton<IExampleHelper, ExampleHelper>();
-            services.AddSingleton<ISkySearchSync, SkySearchSyncService>();
+            services.AddScoped<IAmadeusAuthentication, AmadeusAuthenticationService>();
+            services.AddScoped<IAmadeusFlightProvider, AmadeusFlightProviderService>();
+            services.AddScoped<IExampleHelper, ExampleHelper>();
+            services.AddScoped<ISkySearchSync, SkySearchSyncService>();
+            services.AddScoped<IUpdateData, UpdateData>();
 
             return services;
         }
