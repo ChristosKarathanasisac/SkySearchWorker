@@ -8,29 +8,34 @@ namespace SkySearchWorker.Worker
     public class UpdateDbWorker : BackgroundService
     {
         private readonly ILogger<UpdateDbWorker> _logger;
-        private readonly ISkySearchSync _skySearchSync;
+        private readonly IServiceProvider _serviceProvider;
         private readonly AppSettings _appSettings;
 
         public UpdateDbWorker(ILogger<UpdateDbWorker> logger,
-            ISkySearchSync skySearchSync,
+            IServiceProvider serviceProvider,
             IOptions<AppSettings> appSettings)
 
         {
             _logger = logger;
-            _skySearchSync = skySearchSync;
+            _serviceProvider = serviceProvider;
             _appSettings = appSettings.Value;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            if (!_appSettings.IsDevelopment)
+            using (var scope = _serviceProvider.CreateScope())
             {
-                _logger.LogInformation("Sync with Amadeus DB");
-                await _skySearchSync.Sync();
-            }
-            else 
-            {
-                _logger.LogInformation("Test Enviroment - Dummy Data");
+                var skySearchSync = scope.ServiceProvider.GetRequiredService<ISkySearchSync>();
+
+                if (!_appSettings.IsDevelopment)
+                {
+                    _logger.LogInformation("Sync with Amadeus DB");
+                    await skySearchSync.Sync();
+                }
+                else
+                {
+                    _logger.LogInformation("Test Enviroment - Dummy Data");
+                }
             }
         }
     }
