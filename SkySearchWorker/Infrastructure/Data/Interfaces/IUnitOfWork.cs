@@ -8,7 +8,10 @@ namespace SkySearchWorker.Infrastructure.Data.Interfaces
 {
     public interface IUnitOfWork : IDisposable
     {
-        IRepository<T> Repository<T>() where T : class;
+        IAirlineRepository Airlines { get; }
+        IAirportRepository Airports { get; }
+        IFlightRepository FlightRepository { get; }
+        IFlightPriceRepository FlightPrices { get; }
         Task<int> SaveChangesAsync();
     }
 }

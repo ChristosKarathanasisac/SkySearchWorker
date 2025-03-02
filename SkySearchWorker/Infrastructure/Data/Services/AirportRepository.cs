@@ -14,5 +14,11 @@ namespace SkySearchWorker.Infrastructure.Data.Services
         {
             
         }
+
+        public async Task<bool> AirportCodeExistsAsync(string code)
+        {
+            var existingAirport = await FindAsync(a => a.Code.ToUpper().Trim().Equals(code.ToUpper().Trim()));
+            return existingAirport.Any();
+        }
     }
 }

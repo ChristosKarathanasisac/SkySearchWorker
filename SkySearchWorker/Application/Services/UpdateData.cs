@@ -36,7 +36,13 @@ namespace SkySearchWorker.Application.Services
                     .ToDictionary(c => c.Key, c => c.Value);
                 await UpdateAirlines(uniqueCarriers);
 
-                //await UpdateAirports();
+
+                var uniqueAirports = flightOffers
+                    .SelectMany(fo => fo.Dictionary.Locations ?? new Dictionary<string, DictionaryLocationDto>())
+                    .GroupBy(c => c.Key)
+                    .Select(g => g.First())
+                    .ToDictionary(c => c.Key, c => c.Value);
+                await UpdateAirports(uniqueAirports);
                 //await UpdateFlights();
                 //await UpdateFlightPrices();
 
@@ -54,32 +60,38 @@ namespace SkySearchWorker.Application.Services
         }
         private async Task UpdateAirlines(Dictionary<string, string> carriers) 
         {
-            var airlineRepo = _unitOfWork.Repository<Airline>();
+            var airlineRepo = _unitOfWork.Airlines;
             foreach (var airlineCode in carriers.Keys) 
             {
-                var existingAirline = await airlineRepo.FindAsync(a => a.Code == airlineCode);
-                if (!existingAirline.Any())
+                var existingAirline = await airlineRepo.AirlineCodeExistsAsync(airlineCode);
+                if (!existingAirline)
                 {
                     var airline = new Airline { 
                         Name = carriers.GetValueOrDefault(airlineCode), 
-                        Code = airlineCode };
-
+                        Code = airlineCode 
+                    };
                     await airlineRepo.AddAsync(airline);
                 }
             }
         }
 
-        private async Task UpdateAirports()
+        private async Task UpdateAirports(Dictionary<string, DictionaryLocationDto> locations)
         {
-            var airport = new Airport
+            var airportRepo = _unitOfWork.Airports;
+            foreach (var airportCode in locations.Keys) 
             {
-                Code = "A",
-                CityCode = "skg",
-                CountryCode = "gr"
-            };
-
-            var airportRepo = _unitOfWork.Repository<Airport>();
-            await airportRepo.AddAsync(airport);
+                var existingAirport = await airportRepo.AirportCodeExistsAsync(airportCode);
+                if (!existingAirport) 
+                {
+                    var value = locations.GetValueOrDefault(airportCode);
+                    var airport = new Airport{
+                        Code = airportCode,
+                        CityCode = value!.CityCode,
+                        CountryCode = value!.CountryCode
+                    };
+                    await airportRepo.AddAsync(airport);
+                }
+            }
         }
 
         private async Task UpdateFlights() 

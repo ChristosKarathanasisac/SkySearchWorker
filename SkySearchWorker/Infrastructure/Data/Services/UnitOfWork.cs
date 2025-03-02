@@ -12,24 +12,23 @@ namespace SkySearchWorker.Infrastructure.Data.Services
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext _context;
-        private readonly Dictionary<Type, object> _repositories = new();
+        private  IAirlineRepository? _airlineRepository;
+        private  IAirportRepository? _airportRepository;
+        private  IFlightPriceRepository? _flightPriceRepository;
+        private  IFlightRepository? _flightRepository;
 
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        public IRepository<T> Repository<T>() where T : class
-        {
-            if (_repositories.ContainsKey(typeof(T)))
-            {
-                return (IRepository<T>)_repositories[typeof(T)];
-            }
+        public IAirlineRepository Airlines => _airlineRepository ??= new AirlineRepository(_context);
 
-            var repository = new Repository<T>(_context);
-            _repositories.Add(typeof(T), repository);
-            return repository;
-        }
+        public IAirportRepository Airports => _airportRepository ??= new AirportRepository(_context);
+
+        public IFlightRepository FlightRepository => _flightRepository ??= new FlightRepository(_context);
+
+        public IFlightPriceRepository FlightPrices => _flightPriceRepository ??= new FlightPriceRepository(_context);
 
         public async Task<int> SaveChangesAsync()
         {

@@ -9,5 +9,6 @@ namespace SkySearchWorker.Infrastructure.Data.Interfaces
 {
     public interface IAirportRepository : IRepository<Airport>
     {
+        Task<bool> AirportCodeExistsAsync(string code);
     }
 }
