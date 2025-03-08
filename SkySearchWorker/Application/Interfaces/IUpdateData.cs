@@ -9,6 +9,8 @@ namespace SkySearchWorker.Application.Interfaces
 {
     public interface IUpdateData
     {
-        Task<bool> UpdateDatabase(List<FlightOfferDto> data);
+        Task<bool> UpdateAirlines(Dictionary<string, string> carriers);
+        Task<bool> UpdateAirports(Dictionary<string, DictionaryLocationDto> locations);
+        Task<bool> UpdateFlights(List<DataDto> dataDtos);
     }
 }

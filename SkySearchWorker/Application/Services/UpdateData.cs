@@ -16,87 +16,135 @@ namespace SkySearchWorker.Application.Services
     {
         private readonly ILogger<UpdateData> _logger;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IAirlineRepository _airlineRepository;
+        private readonly IAirportRepository _airportRepository;
+        private readonly IFlightRepository _flightRepository;
+        private readonly IFlightPriceRepository _flightPriceRepository;
 
         public UpdateData(ILogger<UpdateData> logger,
-            IUnitOfWork unitOfWork)
+            IUnitOfWork unitOfWork,
+            IAirlineRepository airlineRepository,
+            IAirportRepository airportRepository,
+            IFlightRepository flightRepository,
+            IFlightPriceRepository flightPriceRepository)
         {
             _logger = logger;
             _unitOfWork = unitOfWork;
+            _airlineRepository = airlineRepository;
+            _airportRepository = airportRepository;
+            _flightRepository = flightRepository;
+            _flightPriceRepository = flightPriceRepository;
         }
-        public async Task<bool> UpdateDatabase(List<FlightOfferDto> flightOffers)
+        public async Task<bool> UpdateAirlines(Dictionary<string, string> carriers)
         {
             try
             {
-                _logger.LogInformation("Starting database update.");
+                var addedAirline = false;
+                foreach (var airlineCode in carriers.Keys)
+                {
+                    var existingAirline = await _airlineRepository.AirlineCodeExistsAsync(airlineCode);
+                    if (!existingAirline)
+                    {
+                        addedAirline = true;
+                        var value = carriers.GetValueOrDefault(airlineCode);
+                        var airline = new Airline
+                        {
+                            Name = value!,
+                            Code = airlineCode
+                        };
+                        await _airlineRepository.AddAsync(airline);
+                    }
+                }
+                if (addedAirline)
+                    await _unitOfWork.SaveChangesAsync();
 
-                var uniqueCarriers = flightOffers
-                    .SelectMany(fo => fo.Dictionary.Carriers ?? new Dictionary<string, string>())
-                    .GroupBy(c => c.Key)
-                    .Select(g => g.First())
-                    .ToDictionary(c => c.Key, c => c.Value);
-                await UpdateAirlines(uniqueCarriers);
-
-
-                var uniqueAirports = flightOffers
-                    .SelectMany(fo => fo.Dictionary.Locations ?? new Dictionary<string, DictionaryLocationDto>())
-                    .GroupBy(c => c.Key)
-                    .Select(g => g.First())
-                    .ToDictionary(c => c.Key, c => c.Value);
-                await UpdateAirports(uniqueAirports);
-                //await UpdateFlights();
-                //await UpdateFlightPrices();
-
-                await _unitOfWork.SaveChangesAsync();
-
-                _logger.LogInformation("Database update completed successfully.");
+                _logger.LogInformation("Airlines updated successfully.");
                 return true;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while updating the database.");
+                _logger.LogError(ex, "An error occurred while updating airlines.");
                 return false;
             }
-            
         }
-        private async Task UpdateAirlines(Dictionary<string, string> carriers) 
+        public async Task<bool> UpdateAirports(Dictionary<string, DictionaryLocationDto> locations)
         {
-            var airlineRepo = _unitOfWork.Airlines;
-            foreach (var airlineCode in carriers.Keys) 
+            try
             {
-                var existingAirline = await airlineRepo.AirlineCodeExistsAsync(airlineCode);
-                if (!existingAirline)
+                var addedAirports = false;
+                foreach (var airportCode in locations.Keys)
                 {
-                    var airline = new Airline { 
-                        Name = carriers.GetValueOrDefault(airlineCode), 
-                        Code = airlineCode 
-                    };
-                    await airlineRepo.AddAsync(airline);
+                    var existingAirport = await _airportRepository.AirportCodeExistsAsync(airportCode);
+                    if (!existingAirport)
+                    {
+                        addedAirports = true;
+                        var value = locations.GetValueOrDefault(airportCode);
+                        var airport = new Airport
+                        {
+                            Code = airportCode,
+                            CityCode = value!.CityCode,
+                            CountryCode = value!.CountryCode
+                        };
+                        await _airportRepository.AddAsync(airport);
+                    }
                 }
+                if (addedAirports)
+                    await _unitOfWork.SaveChangesAsync();
+
+                _logger.LogInformation("Airports updated successfully.");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while updating airports.");
+                return false;
             }
         }
-
-        private async Task UpdateAirports(Dictionary<string, DictionaryLocationDto> locations)
+        public async Task<bool> UpdateFlights(List<DataDto> dataDtos)
         {
-            var airportRepo = _unitOfWork.Airports;
-            foreach (var airportCode in locations.Keys) 
+            try
             {
-                var existingAirport = await airportRepo.AirportCodeExistsAsync(airportCode);
-                if (!existingAirport) 
+                var addedFlight = false;
+                foreach (var data in dataDtos)
                 {
-                    var value = locations.GetValueOrDefault(airportCode);
-                    var airport = new Airport{
-                        Code = airportCode,
-                        CityCode = value!.CityCode,
-                        CountryCode = value!.CountryCode
-                    };
-                    await airportRepo.AddAsync(airport);
+                    var itenary = data.Itineraries!.FirstOrDefault();
+                    var segment = itenary!.Segments!.FirstOrDefault();
+                    var existingFlight = await _flightRepository.FlightExistAsync(
+                        segment!.Departure!.At,
+                        segment!.Departure!.IataCode!,
+                        segment!.Arrival!.At,
+                        segment!.Arrival!.IataCode!);
+
+                    if (!existingFlight)
+                    {
+                        addedFlight = true;
+                        var departureAirport = await _airportRepository.GetAirportAsync(segment!.Departure!.IataCode!);
+                        var arrivalAirport = await _airportRepository.GetAirportAsync(segment!.Arrival!.IataCode!);
+                        var airline = await _airlineRepository.GetAirlineAsync(segment!.Operating!.CarrierCode!);
+                        var flight = new Flight
+                        {
+                            DepartureTime = segment!.Departure!.At,
+                            DepartureAirportId = departureAirport.Id,
+                            ArrivalTime = segment!.Arrival!.At,
+                            ArrivalAirportId = arrivalAirport.Id,
+                            AirlineId = airline.Id,
+                            NumberOfAvailableSeats = data.NumberOfBookableSeats
+                        };
+
+                        await _flightRepository.AddAsync(flight);
+                    }
                 }
+                if (addedFlight)
+                    await _unitOfWork.SaveChangesAsync();
+
+                _logger.LogInformation("Flights updated successfully.");
+                return true;
             }
-        }
-
-        private async Task UpdateFlights() 
-        {
-
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while updating flights.");
+                return false;
+            }
         }
         private async Task UpdateFlightPrices()
         {
