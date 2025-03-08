@@ -146,9 +146,43 @@ namespace SkySearchWorker.Application.Services
                 return false;
             }
         }
-        private async Task UpdateFlightPrices()
+        public async Task<bool> UpdateFlightPrices(List<DataDto> dataDtos)
         {
+            try
+            {
+                foreach (var data in dataDtos)
+                {
+                    var itenary = data.Itineraries!.FirstOrDefault();
+                    var segment = itenary!.Segments!.FirstOrDefault();
+                    var flight = await _flightRepository.GetFlight(
+                            segment!.Departure!.At,
+                            segment!.Departure!.IataCode!,
+                            segment!.Arrival!.At,
+                            segment!.Arrival!.IataCode!);
+                    var priceObj = data!.Price!;
+                    var cabin = data.TravelerPricings!.FirstOrDefault()!.FareDetailsBySegment!.FirstOrDefault()!.Cabin;
 
+                    var flightPrice = new FlightPrice
+                    {
+                        Price = Decimal.Parse(priceObj.Total!),
+                        Currency = priceObj.Currency,
+                        Date = DateTime.Now,
+                        FlightId = flight.Id,
+                        Class = cabin
+                    };
+
+                    await _flightPriceRepository.AddAsync(flightPrice);
+                }
+                await _unitOfWork.SaveChangesAsync();
+
+                _logger.LogInformation("Flight prices updated successfully.");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while updating flight prices.");
+                return false;
+            }
         }
     }
 }
