@@ -14,13 +14,13 @@ namespace SkySearchWorker.Infrastructure.Data.Services
         {
         }
 
-        public async Task<bool> FlightExistAsynch(DateTime departureTime, string departureAirportCode, DateTime arrivalTime, string arrivalAirportCode)
+        public async Task<bool> FlightExistAsync(DateTime departureTime, string departureAirportCode, DateTime arrivalTime, string arrivalAirportCode)
         {
             var existingFlight = await FindAsync(a =>
-                a.DepartureTime == departureTime &&
-                a.DepartureAirport!.Code.Equals(departureAirportCode) &&
-                a.ArrivalTime == arrivalTime &&
-                a.ArrivalAirport!.Code.Equals(departureAirportCode));
+                 a.DepartureTime == departureTime &&
+                 a.DepartureAirport!.Code.Equals(departureAirportCode) &&
+                 a.ArrivalTime == arrivalTime &&
+                 a.ArrivalAirport!.Code.Equals(arrivalAirportCode));
 
             return existingFlight.Any();
         }
