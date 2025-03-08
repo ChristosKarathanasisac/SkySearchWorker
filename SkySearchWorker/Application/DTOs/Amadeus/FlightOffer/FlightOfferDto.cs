@@ -10,7 +10,7 @@ namespace SkySearchWorker.Application.DTOs.Amadeus.FlightOffer
     public class FlightOfferDto
     {
         [JsonPropertyName("data")]
-        public required List<DatumDto> Data { get; set; }
+        public required List<DataDto> Data { get; set; }
         [JsonPropertyName("dictionaries")]
         public required DictionaryDto Dictionary { get; set; }
     }
