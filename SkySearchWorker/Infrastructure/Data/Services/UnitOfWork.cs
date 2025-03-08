@@ -26,9 +26,11 @@ namespace SkySearchWorker.Infrastructure.Data.Services
 
         public IAirportRepository Airports => _airportRepository ??= new AirportRepository(_context);
 
-        public IFlightRepository FlightRepository => _flightRepository ??= new FlightRepository(_context);
+        public IFlightRepository Flights => _flightRepository ??= new FlightRepository(_context);
 
         public IFlightPriceRepository FlightPrices => _flightPriceRepository ??= new FlightPriceRepository(_context);
+
+        
 
         public async Task<int> SaveChangesAsync()
         {

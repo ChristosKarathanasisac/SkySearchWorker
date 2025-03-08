@@ -9,5 +9,7 @@ namespace SkySearchWorker.Infrastructure.Data.Interfaces
 {
     public interface IFlightRepository : IRepository<Flight>
     {
+        Task<bool> FlightExistAsync(DateTime departureTime, string departureAirportCode,
+            DateTime arrivalTime, string arrivalAirportCode);
     }
 }

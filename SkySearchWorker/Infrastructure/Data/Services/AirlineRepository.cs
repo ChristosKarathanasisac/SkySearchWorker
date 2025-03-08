@@ -21,5 +21,16 @@ namespace SkySearchWorker.Infrastructure.Data.Services
             var existingAirline = await FindAsync(a => a.Code.ToUpper().Trim().Equals(code.ToUpper().Trim()));
             return existingAirline.Any();
         }
+
+        public async Task<Airline> GetAirlineAsync(string code)
+        {
+            var airlineExist = await AirlineCodeExistsAsync(code);
+            if (airlineExist) 
+            {
+                var airline = await FindAsync(a => a.Code.ToUpper().Trim().Equals(code.ToUpper().Trim()));
+                return airline.FirstOrDefault()!;
+            }
+            throw new KeyNotFoundException($"Airline with code {code} not found.");
+        }
     }
 }

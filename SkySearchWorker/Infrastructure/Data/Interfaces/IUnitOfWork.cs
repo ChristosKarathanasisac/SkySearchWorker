@@ -10,7 +10,7 @@ namespace SkySearchWorker.Infrastructure.Data.Interfaces
     {
         IAirlineRepository Airlines { get; }
         IAirportRepository Airports { get; }
-        IFlightRepository FlightRepository { get; }
+        IFlightRepository Flights { get; }
         IFlightPriceRepository FlightPrices { get; }
         Task<int> SaveChangesAsync();
     }
