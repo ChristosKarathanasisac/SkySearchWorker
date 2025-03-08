@@ -11,5 +11,7 @@ namespace SkySearchWorker.Infrastructure.Data.Interfaces
     {
         Task<bool> FlightExistAsync(DateTime departureTime, string departureAirportCode,
             DateTime arrivalTime, string arrivalAirportCode);
+        Task<Flight> GetFlight(DateTime departureTime, string departureAirportCode,
+            DateTime arrivalTime, string arrivalAirportCode);
     }
 }

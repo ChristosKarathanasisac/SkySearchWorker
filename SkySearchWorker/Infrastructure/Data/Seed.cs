@@ -46,8 +46,8 @@ namespace SkySearchWorker.Infrastructure.Data
                 // Seed FlightPrices
                 var flightPrices = new List<FlightPrice>
                 {
-                    new FlightPrice { Price = 100, Class = "Economy", AvailableSeats = 50, Date = DateTime.Now, Currency = "EUR", Flight = flights[0] },
-                    new FlightPrice { Price = 200, Class = "Business", AvailableSeats = 20, Date = DateTime.Now, Currency = "EUR", Flight = flights[1] }
+                    new FlightPrice { Price = 100, Class = "Economy",  Date = DateTime.Now, Currency = "EUR", Flight = flights[0] },
+                    new FlightPrice { Price = 200, Class = "Business", Date = DateTime.Now, Currency = "EUR", Flight = flights[1] }
                 };
                 context.FlightPrices.AddRange(flightPrices);
 
