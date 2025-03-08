@@ -68,6 +68,9 @@ namespace SkySearchWorker.Application.Services
             if (!(await _updateData.UpdateFlights(uniqueFlights)))
                 return false;
 
+            if(!(await _updateData.UpdateFlightPrices(uniqueFlights)))
+                return false;
+
             return true;
         }
         private async Task<List<FlightOfferDto>> GetFlightOffersAsync()
