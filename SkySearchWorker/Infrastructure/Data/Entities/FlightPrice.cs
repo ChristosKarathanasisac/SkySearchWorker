@@ -11,7 +11,6 @@ namespace SkySearchWorker.Infrastructure.Data.Entities
         public int Id { get; set; }
         public Decimal Price { get; set; }
         public string? Class { get; set; }
-        public int AvailableSeats {get;set;}
         public DateTime Date { get; set; }
         public string? Currency { get; set; }
         public int FlightId { get; set; }

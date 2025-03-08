@@ -16,7 +16,6 @@ namespace SkySearchWorker.Infrastructure.Data.EfConfiguration
             builder.ToTable("FlightPrice");
 
             builder.HasKey(fp => fp.Id);
-            builder.Property(fp => fp.AvailableSeats).IsRequired();
             builder.Property(fp => fp.Class).HasMaxLength(50).IsRequired();
             builder.Property(fp => fp.Date).IsRequired();
             builder.Property(fp => fp.FlightId).IsRequired();
