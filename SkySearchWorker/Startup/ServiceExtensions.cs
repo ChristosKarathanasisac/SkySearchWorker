@@ -31,6 +31,7 @@ namespace SkySearchWorker.Startup
             services.AddScoped<IExampleHelper, ExampleHelper>();
             services.AddScoped<ISkySearchSync, SkySearchSyncService>();
             services.AddScoped<IUpdateData, UpdateData>();
+            services.AddScoped<IUpdateDataHelper, UpdateDataHelper>();
 
             return services;
         }
