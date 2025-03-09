@@ -13,62 +13,93 @@ namespace SkySearchWorker.Application.Services
 {
     public class ExampleHelper : IExampleHelper
     {
+        private readonly ILogger<ExampleHelper> _logger;
         private readonly IAmadeusFlightProvider _amadeusFlightProvider;
         private readonly AppSettings _appSettings;
 
-        public ExampleHelper(IAmadeusFlightProvider amadeusFlightProvider,
+        public ExampleHelper(ILogger<ExampleHelper> logger,
+            IAmadeusFlightProvider amadeusFlightProvider,
             IOptions<AppSettings> appSettings)
         {
+            _logger = logger;
             _amadeusFlightProvider = amadeusFlightProvider;
             _appSettings = appSettings.Value;
         }
         public List<string> GetDateRange(string fromDate, string toDate)
         {
-            var dateList = new List<string>();
-            var startDate = DateTime.ParseExact(fromDate, "dd-MM-yyyy", CultureInfo.InvariantCulture);
-            var endDate = DateTime.ParseExact(toDate, "dd-MM-yyyy", CultureInfo.InvariantCulture);
-
-            for (var date = startDate; date <= endDate; date = date.AddDays(1))
+            try
             {
-                dateList.Add(date.ToString("yyyy-MM-dd"));
+                var dateList = new List<string>();
+                var startDate = DateTime.ParseExact(fromDate, "dd-MM-yyyy", CultureInfo.InvariantCulture);
+                var endDate = DateTime.ParseExact(toDate, "dd-MM-yyyy", CultureInfo.InvariantCulture);
+
+                for (var date = startDate; date <= endDate; date = date.AddDays(1))
+                {
+                    dateList.Add(date.ToString("yyyy-MM-dd"));
+                }
+
+                _logger.LogInformation("Date range from {FromDate} to {ToDate} generated successfully.", fromDate, toDate);
+                return dateList;
             }
-            return dateList; 
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while generating the date range from {FromDate} to {ToDate}.", fromDate, toDate);
+                throw;
+            }
         }
 
-        public List<Dictionary<string,string>> GetFlightOfferDictionaries()
+        public List<Dictionary<string, string>> GetFlightOfferDictionaries()
         {
-            var airports = _appSettings.TestData.Airports;
-            var dates = GetDateRange(_appSettings.TestData.FromDate, _appSettings.TestData.ToDate);
+            try
+            {
+                var airports = _appSettings.TestData.Airports;
+                var dates = GetDateRange(_appSettings.TestData.FromDate, _appSettings.TestData.ToDate);
 
-            var dictionaries = (from date in dates
-                                from origin in airports
-                                from destination in airports
-                                where origin != destination
-                                select new Dictionary<string, string>
-                                {
-                                    { "originLocationCode", origin },
-                                    { "destinationLocationCode", destination },
-                                    { "departureDate", date },
-                                    { "adults", "1" },
-                                    { "nonStop", "true" },
-                                    { "max", "1" }
-                                }).ToList();
+                var dictionaries = (from date in dates
+                                    from origin in airports
+                                    from destination in airports
+                                    where origin != destination
+                                    select new Dictionary<string, string>
+                                    {
+                                        { "originLocationCode", origin },
+                                        { "destinationLocationCode", destination },
+                                        { "departureDate", date },
+                                        { "adults", "1" },
+                                        { "nonStop", "true" },
+                                        { "max", "1" }
+                                    }).ToList();
 
-            return dictionaries;
+                _logger.LogInformation("Flight offer dictionaries generated successfully.");
+                return dictionaries;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while generating flight offer dictionaries.");
+                throw;
+            }
         }
 
         public List<List<Dictionary<string, string>>> GetGroupedFlightOfferDictionaries()
         {
-            var dictionaries = GetFlightOfferDictionaries();
-            var batchSize = _appSettings.TestData.MaxConcurrentCalls;
+            try
+            {
+                var dictionaries = GetFlightOfferDictionaries();
+                var batchSize = _appSettings.TestData.MaxConcurrentCalls;
 
-            var groupedDictionaries = dictionaries
-                .Select((task, index) => new { task, index })
-                .GroupBy(x => x.index / batchSize)
-                .Select(g => g.Select(x => x.task).ToList())
-                .ToList();
+                var groupedDictionaries = dictionaries
+                    .Select((task, index) => new { task, index })
+                    .GroupBy(x => x.index / batchSize)
+                    .Select(g => g.Select(x => x.task).ToList())
+                    .ToList();
 
-            return groupedDictionaries;
+                _logger.LogInformation("Grouped flight offer dictionaries generated successfully.");
+                return groupedDictionaries;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while grouping flight offer dictionaries.");
+                throw;
+            }
         }
     }
 }
