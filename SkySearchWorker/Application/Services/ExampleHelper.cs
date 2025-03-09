@@ -14,15 +14,12 @@ namespace SkySearchWorker.Application.Services
     public class ExampleHelper : IExampleHelper
     {
         private readonly ILogger<ExampleHelper> _logger;
-        private readonly IAmadeusFlightProvider _amadeusFlightProvider;
         private readonly AppSettings _appSettings;
 
         public ExampleHelper(ILogger<ExampleHelper> logger,
-            IAmadeusFlightProvider amadeusFlightProvider,
             IOptions<AppSettings> appSettings)
         {
             _logger = logger;
-            _amadeusFlightProvider = amadeusFlightProvider;
             _appSettings = appSettings.Value;
         }
         public List<string> GetDateRange(string fromDate, string toDate)
