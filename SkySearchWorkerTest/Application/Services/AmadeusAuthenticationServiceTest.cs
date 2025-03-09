@@ -55,6 +55,22 @@ namespace SkySearchWorkerTest.Application.Services
             Assert.True(result);
             Assert.Equal("test-access-token", _appSettings.Credentials.AccessToken);
         }
-    }
 
+        [Fact]
+        public async Task Authenticate_ShouldReturnFalse_WhenAuthenticationFails()
+        {
+            // Arrange
+            _mockHttpClient.PostUrlEncodedAsync<AuthenticationResponseDto>(
+                Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Dictionary<string, string>>())
+                .Returns((AuthenticationResponseDto)null);
+
+            var service = new AmadeusAuthenticationService(_mockLogger, _mockHttpClient, _mockAppSettings);
+
+            // Act
+            var result = await service.Authenticate();
+
+            // Assert
+            Assert.False(result);
+        }
+    }
 }
