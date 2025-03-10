@@ -1,5 +1,7 @@
 ﻿using Azure.Core;
+using SkySearchWorker.Application.DTOs.Amadeus.FlightOffer;
 using SkySearchWorker.Infrastructure.Configuration;
+using SkySearchWorker.Infrastructure.Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,6 +44,79 @@ namespace SkySearchWorkerTest.Application.TestDataHelper
                     DelayBetweenCalls = 1,
                     MaxFlights = 1,
                 }
+            };
+        public static List<DataDto> GetDataDto() =>
+            new List<DataDto>
+            {
+                new DataDto
+                {
+                    Itineraries = new List<ItineraryDto>
+                    {
+                        new ItineraryDto
+                        {
+                            Segments = new List<SegmentDto>
+                            {
+                                new SegmentDto
+                                {
+                                    Departure =new LocationDto
+                                    {
+                                        IataCode = "JFK",
+                                        Terminal = "1",
+                                        At = DateTime.Now,
+                                    },
+                                    Arrival =new LocationDto
+                                    {
+                                        IataCode = "MIA",
+                                        Terminal = "2",
+                                        At = DateTime.Now,
+                                    },
+                                    Operating = new OperatingDto { CarrierCode = "AA" }
+                                }
+                            }
+                        }
+                    },
+                    Price = new PriceDto
+                    {
+                        Currency = "EUR",
+                        Total = 100.ToString()
+                    },
+                    TravelerPricings = new List<TravelerPricingDto>
+                    {
+                        new TravelerPricingDto
+                        {
+                            FareDetailsBySegment = new List<FareDetailsBySegmentDto>
+                            {
+                                new FareDetailsBySegmentDto
+                                {
+                                    Cabin = "economy"
+                                }
+                            }
+                        }
+                    },
+                    NumberOfBookableSeats = 100
+                }
+            };
+        public static Airport GetJFKAirport() =>
+            new Airport { 
+                Id = 1,
+                CityCode = "NY",
+                Code = "JFK",
+                CountryCode = "USA" 
+            };
+        public static Airport GetMIAAirport() =>
+            new Airport
+            {
+                Id = 1,
+                CityCode = "MIA",
+                Code = "MIA",
+                CountryCode = "USA"
+            };
+        public static Airline GetAAAirline() =>
+            new Airline
+            {
+                Id = 1,
+                Name = "American Airlines",
+                Code = "AA"
             };
     }
 }
