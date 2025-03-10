@@ -73,7 +73,7 @@ namespace SkySearchWorker.Application.Services
 
             return true;
         }
-        private async Task<List<FlightOfferDto>> GetFlightOffersAsync()
+        public async Task<List<FlightOfferDto>> GetFlightOffersAsync()
         {
             try
             {
