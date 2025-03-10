@@ -30,6 +30,9 @@ namespace SkySearchWorker.Application.Services
                 var startDate = DateTime.ParseExact(fromDate, "dd-MM-yyyy", CultureInfo.InvariantCulture);
                 var endDate = DateTime.ParseExact(toDate, "dd-MM-yyyy", CultureInfo.InvariantCulture);
 
+                if (startDate > endDate)
+                    throw new ArgumentException("The start date cannot be later than the end date.");
+
                 for (var date = startDate; date <= endDate; date = date.AddDays(1))
                 {
                     dateList.Add(date.ToString("yyyy-MM-dd"));
@@ -63,7 +66,7 @@ namespace SkySearchWorker.Application.Services
                                         { "departureDate", date },
                                         { "adults", "1" },
                                         { "nonStop", "true" },
-                                        { "max", "1" }
+                                        { "max", $"{_appSettings.TestData.MaxFlights}" }
                                     }).ToList();
 
                 _logger.LogInformation("Flight offer dictionaries generated successfully.");

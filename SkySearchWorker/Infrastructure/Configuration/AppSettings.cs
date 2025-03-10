@@ -36,5 +36,6 @@ namespace SkySearchWorker.Infrastructure.Configuration
         public required string ToDate { get; set; }
         public required int MaxConcurrentCalls { get; set; }
         public required int DelayBetweenCalls { get; set; }
+        public required int MaxFlights { get; set; }
     }
 }

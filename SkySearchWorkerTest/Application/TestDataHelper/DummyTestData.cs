@@ -36,10 +36,11 @@ namespace SkySearchWorkerTest.Application.TestDataHelper
                      "Airport1",
                      "Airport2"
                  },
-                    FromDate = DateTime.Now.ToString(),
-                    ToDate = DateTime.Now.ToString(),
+                    FromDate = "01-01-2025",
+                    ToDate = "01-01-2025",
                     MaxConcurrentCalls = 2,
-                    DelayBetweenCalls = 1
+                    DelayBetweenCalls = 1,
+                    MaxFlights = 1,
                 }
             };
     }
