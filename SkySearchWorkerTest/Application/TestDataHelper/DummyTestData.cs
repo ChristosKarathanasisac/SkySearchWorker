@@ -118,5 +118,121 @@ namespace SkySearchWorkerTest.Application.TestDataHelper
                 Name = "American Airlines",
                 Code = "AA"
             };
+        public static List<FlightOfferDto> GetFlightOfferDtos() =>
+            new List<FlightOfferDto>
+            {
+                new FlightOfferDto
+                {
+                    Dictionary = new DictionaryDto
+                    {
+                        Locations = new Dictionary<string, DictionaryLocationDto>
+                        {
+                            { "JFK", new DictionaryLocationDto { CityCode = "NYC", CountryCode = "US" } },
+                            { "LAX", new DictionaryLocationDto { CityCode = "LA", CountryCode = "US" } }
+                        },
+                        Carriers = new Dictionary<string, string>
+                        {
+                            { "AA", "American Airlines" },
+                            { "DL", "Delta Airlines" }
+                        },
+                        Aircraft = new Dictionary<string, string>
+                        {
+                            { "737", "Boeing 737" },
+                            { "320", "Airbus A320" }
+                        },
+                        Currencies = new Dictionary<string, string>
+                        {
+                            { "USD", "United States Dollar" },
+                            { "EUR", "Euro" }
+                        }
+                    },
+                    Data = new List<DataDto>
+                    {
+                        new DataDto
+                        {
+                            Id = "1",
+                            Type = "flight-offer",
+                            Source = "GDS",
+                            InstantTicketingRequired = false,
+                            NonHomogeneous = false,
+                            OneWay = false,
+                            IsUpsellOffer = false,
+                            LastTicketingDate = "2025-03-10",
+                            LastTicketingDateTime = "2025-03-10T23:59:59",
+                            NumberOfBookableSeats = 5,
+                            Itineraries = new List<ItineraryDto>
+                            {
+                                new ItineraryDto
+                                {
+                                    Duration = "PT5H",
+                                    Segments = new List<SegmentDto>
+                                    {
+                                        new SegmentDto
+                                        {
+                                            Departure = new LocationDto
+                                            {
+                                                At = DateTime.Now,
+                                                IataCode = "JFK"
+                                            },
+                                            Arrival = new LocationDto
+                                            {
+                                                At = DateTime.Now.AddHours(5),
+                                                IataCode = "LAX"
+                                            },
+                                            Operating = new OperatingDto
+                                            {
+                                                CarrierCode = "AA"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            Price = new PriceDto
+                            {
+                                Currency = "USD",
+                                Total = "500.00",
+                                Base = "450.00",
+                                Fees = new List<FeeDto>
+                                {
+                                    new FeeDto
+                                    {
+                                        Amount = "50.00",
+                                        Type = "Service Fee"
+                                    }
+                                },
+                                GrandTotal = "500.00"
+                            },
+                            PricingOptions = new PricingOptionsDto
+                            {
+                                FareType = new List<string> { "PUBLISHED" },
+                                IncludedCheckedBagsOnly = true
+                            },
+                            ValidatingAirlineCodes = new List<string> { "AA" },
+                            TravelerPricings = new List<TravelerPricingDto>
+                            {
+                                new TravelerPricingDto
+                                {
+                                    TravelerId = "1",
+                                    FareOption = "STANDARD",
+                                    TravelerType = "ADULT",
+                                    Price = new PriceDto
+                                    {
+                                        Currency = "USD",
+                                        Total = "500.00",
+                                        Base = "450.00"
+                                    },
+                                    FareDetailsBySegment = new List<FareDetailsBySegmentDto>
+                                    {
+                                        new FareDetailsBySegmentDto
+                                        {
+                                            Cabin = "ECONOMY"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
     }
 }
