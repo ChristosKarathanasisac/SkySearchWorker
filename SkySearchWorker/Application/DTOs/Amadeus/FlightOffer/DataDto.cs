@@ -2,7 +2,7 @@
 
 namespace SkySearchWorker.Application.DTOs.Amadeus.FlightOffer
 {
-    public class DatumDto
+    public class DataDto
     {
         [JsonPropertyName("type")]
         public string? Type { get; set; }

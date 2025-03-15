@@ -18,35 +18,56 @@ namespace SkySearchWorker.Application.Services
 {
     public class AmadeusFlightProviderService : IAmadeusFlightProvider
     {
+        private readonly ILogger<AmadeusFlightProviderService> _logger;
         private readonly ICustomHttpClient _httpClientService;
         private readonly AppSettings _appSettings;
 
-        public AmadeusFlightProviderService(ICustomHttpClient httpClientService,
+        public AmadeusFlightProviderService(ILogger<AmadeusFlightProviderService> logger,
+            ICustomHttpClient httpClientService,
             IOptions<AppSettings> appSettings)
         {
+            _logger = logger;
             _httpClientService = httpClientService;
             _appSettings = appSettings.Value;
         }
         public async Task<T?> GetFlightOffers<T>(Dictionary<string, string> keyValueParams)
         {
-            var queryParams = HttpUtility.ParseQueryString(string.Empty);
-            foreach (var param in keyValueParams)
+            try
             {
-                queryParams[param.Key] = param.Value;
+                var queryParams = HttpUtility.ParseQueryString(string.Empty);
+                foreach (var param in keyValueParams)
+                {
+                    queryParams[param.Key] = param.Value;
+                }
+
+                string fullUrl = new Uri(new Uri(_appSettings.Urls.ShoppingBase), _appSettings.Urls.FlightOffers).ToString();
+                var uriBuilder = new UriBuilder(fullUrl)
+                {
+                    Port = -1,
+                    Query = queryParams.ToString()
+                };
+
+                _logger.LogInformation("Sending flight offers request to {Url}", uriBuilder.ToString());
+                var flights = await _httpClientService.GetAsyncWithBearerAuth<T>(uriBuilder.ToString(),
+                    _appSettings.AmadeusClient,
+                    _appSettings.Credentials.AccessToken);
+
+                if (flights != null)
+                {
+                    _logger.LogInformation("Flight offers retrieved successfully.");
+                }
+                else
+                {
+                    _logger.LogWarning("No flight offers retrieved.");
+                }
+
+                return flights;
             }
-
-            string fullUrl = new Uri(new Uri(_appSettings.Urls.ShoppingBase), _appSettings.Urls.FlightOffers).ToString();
-            var uriBuilder = new UriBuilder(fullUrl)
+            catch (Exception ex)
             {
-                Port = -1,
-                Query = queryParams.ToString()
-            };
-
-            var flights = await _httpClientService.GetAsyncWithBearerAuth<T>(uriBuilder.ToString(),
-                _appSettings.AmadeusClient,
-                _appSettings.Credentials.AccessToken);
-
-            return flights;
+                _logger.LogError(ex, "An error occurred while retrieving flight offers.");
+                return default;
+            }
         }
     }
 

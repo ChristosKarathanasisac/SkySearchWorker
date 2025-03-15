@@ -9,6 +9,7 @@ namespace SkySearchWorker.Infrastructure.Configuration
 {
     public class AppSettings
     {
+        public bool IsDevelopment { get; set; }
         public required Credentials Credentials { get; set; }
         public required Urls Urls { get; set; }
         public required string AmadeusClient = "amadeus";
@@ -35,5 +36,6 @@ namespace SkySearchWorker.Infrastructure.Configuration
         public required string ToDate { get; set; }
         public required int MaxConcurrentCalls { get; set; }
         public required int DelayBetweenCalls { get; set; }
+        public required int MaxFlights { get; set; }
     }
 }

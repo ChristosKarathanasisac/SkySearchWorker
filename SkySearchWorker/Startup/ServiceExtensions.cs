@@ -4,6 +4,8 @@ using Microsoft.Extensions.Options;
 using SkySearchWorker.Application.Interfaces;
 using SkySearchWorker.Application.Services;
 using SkySearchWorker.Infrastructure.Configuration;
+using SkySearchWorker.Infrastructure.Data.Interfaces;
+using SkySearchWorker.Infrastructure.Data.Services;
 using SkySearchWorker.Infrastructure.Interfaces;
 using SkySearchWorker.Infrastructure.Services;
 using System;
@@ -16,15 +18,20 @@ namespace SkySearchWorker.Startup
 {
     public static class ServiceExtensions
     {
-        public static IServiceCollection RegisterInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection RegisterInfrastructureServices(this IServiceCollection services)
         {
-            services.Configure<AppSettings>(configuration.GetSection("Amadeus"));
-            services.AddHttpClient("amadeus", (client) => { });
-            services.AddSingleton<ICustomHttpClient, CustomHttpClientService>();
-            services.AddSingleton<IAmadeusAuthentication, AmadeusAuthenticationService>();
-            services.AddSingleton<IAmadeusFlightProvider, AmadeusFlightProviderService>();
-            services.AddSingleton<IExampleHelper, ExampleHelper>();
-            services.AddSingleton<ISkySearchSync, SkySearchSyncService>();
+            services.AddScoped<ICustomHttpClient, CustomHttpClientService>();
+            return services;
+        }
+
+        public static IServiceCollection RegisterApplicationServices(this IServiceCollection services)
+        {
+            services.AddScoped<IAmadeusAuthentication, AmadeusAuthenticationService>();
+            services.AddScoped<IAmadeusFlightProvider, AmadeusFlightProviderService>();
+            services.AddScoped<IExampleHelper, ExampleHelper>();
+            services.AddScoped<ISkySearchSync, SkySearchSyncService>();
+            services.AddScoped<IUpdateData, UpdateData>();
+            services.AddScoped<IUpdateDataHelper, UpdateDataHelper>();
 
             return services;
         }
